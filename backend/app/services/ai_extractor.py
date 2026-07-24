@@ -1,4 +1,4 @@
-import json
+import time
 
 from google import genai
 
@@ -6,12 +6,11 @@ from app.schemas.lead import Lead
 
 
 class AIExtractor:
-    """
-    Extract structured lead information using Google Gemini.
-    """
 
     def __init__(self, api_key: str):
-        self.client = genai.Client(api_key=api_key)
+        self.client = genai.Client(
+            api_key=api_key
+        )
 
     def extract_lead(
         self,
@@ -20,41 +19,39 @@ class AIExtractor:
     ) -> Lead:
 
         prompt = f"""
-You are a B2B lead research assistant.
+        Extract company information from this website.
 
-Extract structured company information from the website content below.
+        Website URL:
+        {website_url}
 
-Website URL:
-{website_url}
+        Website content:
+        {website_content}
+        """
 
-Website Content:
-{website_content}
+        max_retries = 3
 
-Return ONLY valid JSON with these fields:
-- company_name
-- website
-- industry
-- description
-- email
-- phone
-- location
-- lead_score
+        for attempt in range(max_retries):
+            try:
+                response = self.client.models.generate_content(
+                    model="gemini-3.5-flash-lite",
+                    contents=prompt,
+                    config={
+                        "response_mime_type": "application/json",
+                        "response_schema": Lead,
+                    },
+                )
 
-Rules:
-- Only use information present in the website content.
-- If information is unavailable, return null.
-- lead_score must be an integer between 0 and 100.
-"""
+                return response.parsed
 
-        response = self.client.models.generate_content(
-            model="gemini-3.5-flash",
-            contents=prompt,
-            config={
-                "response_mime_type": "application/json",
-                "response_schema": Lead,
-            },
-        )
+            except Exception as error:
+                if attempt == max_retries - 1:
+                    raise error
 
-        data = json.loads(response.text)
+                wait_time = 2 ** attempt
 
-        return Lead(**data)
+                print(
+                    f"Gemini request failed. "
+                    f"Retrying in {wait_time} seconds..."
+                )
+
+                time.sleep(wait_time)

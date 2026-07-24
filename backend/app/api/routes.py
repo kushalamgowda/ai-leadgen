@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, HttpUrl
-
+from app.services.lead_scorer import calculate_lead_score
 from app.config import settings
 from app.schemas.lead import Lead
 from app.services.ai_extractor import AIExtractor
@@ -9,6 +9,7 @@ from app.services.contact_extractor import (
     extract_phone_numbers,
 )
 from app.services.crawler import crawl_website
+
 
 
 router = APIRouter(
@@ -79,8 +80,11 @@ def enrich_lead(request: CrawlRequest):
 
         if phone_numbers:
             lead.phone = phone_numbers[0]
+        
+        # Step 5: Calculate explainable lead score
+        lead.lead_score = calculate_lead_score(lead)
 
-        # Step 5: Return final validated lead
+        # Step 6: Return final validated lead
         return lead
 
     except Exception as error:
