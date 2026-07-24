@@ -4,6 +4,10 @@ from pydantic import BaseModel, HttpUrl
 from app.config import settings
 from app.schemas.lead import Lead
 from app.services.ai_extractor import AIExtractor
+from app.services.contact_extractor import (
+    extract_emails,
+    extract_phone_numbers,
+)
 from app.services.crawler import crawl_website
 
 
@@ -43,25 +47,40 @@ def crawl_url(request: CrawlRequest):
 @router.post("/enrich", response_model=Lead)
 def enrich_lead(request: CrawlRequest):
     """
-    Crawl a website and extract structured lead information using AI.
+    Crawl a website and extract structured lead information using AI
+    and deterministic contact extraction.
     """
 
     try:
         # Step 1: Crawl website
-        crawled_data = crawl_website(str(request.url))
+        crawled_data = crawl_website(
+            str(request.url)
+        )
 
-        # Step 2: Create AI extractor
+        content = crawled_data["content"]
+
+        # Step 2: Extract contacts deterministically
+        emails = extract_emails(content)
+        phone_numbers = extract_phone_numbers(content)
+
+        # Step 3: Extract company information with Gemini
         extractor = AIExtractor(
             api_key=settings.gemini_api_key
         )
 
-        # Step 3: Extract structured lead
         lead = extractor.extract_lead(
             website_url=str(request.url),
-            website_content=crawled_data["content"],
+            website_content=content,
         )
 
-        # Step 4: Return validated lead
+        # Step 4: Add deterministic contact data
+        if emails:
+            lead.email = emails[0]
+
+        if phone_numbers:
+            lead.phone = phone_numbers[0]
+
+        # Step 5: Return final validated lead
         return lead
 
     except Exception as error:

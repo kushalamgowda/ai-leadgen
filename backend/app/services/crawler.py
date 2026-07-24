@@ -1,5 +1,6 @@
 import asyncio
 
+from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
 
@@ -17,12 +18,21 @@ async def _crawl_website(url: str) -> dict:
             )
 
             title = await page.title()
-            content = await page.locator("body").inner_text()
+
+            html = await page.content()
+
+            soup = BeautifulSoup(html, "html.parser")
+
+            content = soup.get_text(
+                separator="\n",
+                strip=True,
+            )
 
             return {
                 "url": url,
                 "title": title,
                 "content": content,
+                "html": html,
             }
 
         finally:
@@ -30,9 +40,4 @@ async def _crawl_website(url: str) -> dict:
 
 
 def crawl_website(url: str) -> dict:
-    """
-    Run Playwright in its own event loop.
-    This avoids Windows asyncio subprocess issues.
-    """
-
     return asyncio.run(_crawl_website(url))
