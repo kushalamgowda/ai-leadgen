@@ -1,11 +1,9 @@
+import asyncio
+
 from playwright.async_api import async_playwright
 
 
-async def crawl_website(url: str) -> dict:
-    """
-    Crawl a website and extract its basic content.
-    """
-
+async def _crawl_website(url: str) -> dict:
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
 
@@ -29,3 +27,12 @@ async def crawl_website(url: str) -> dict:
 
         finally:
             await browser.close()
+
+
+def crawl_website(url: str) -> dict:
+    """
+    Run Playwright in its own event loop.
+    This avoids Windows asyncio subprocess issues.
+    """
+
+    return asyncio.run(_crawl_website(url))
