@@ -1,3 +1,8 @@
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
+from app.db.database import get_db
+from app.db.models import LeadModel
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, HttpUrl
 from app.services.lead_scorer import calculate_lead_score
@@ -46,7 +51,7 @@ def crawl_url(request: CrawlRequest):
 
 
 @router.post("/enrich", response_model=Lead)
-def enrich_lead(request: CrawlRequest):
+def enrich_lead(request: CrawlRequest, db: Session = Depends(get_db)):
     """
     Crawl a website and extract structured lead information using AI
     and deterministic contact extraction.
@@ -83,6 +88,22 @@ def enrich_lead(request: CrawlRequest):
         
         # Step 5: Calculate explainable lead score
         lead.lead_score = calculate_lead_score(lead)
+        
+        db_lead = LeadModel(
+            company_name=lead.company_name,
+            website=str(lead.website),
+            industry=lead.industry,
+            description=lead.description,
+            email=lead.email,
+            phone=lead.phone,
+            location=lead.location,
+            lead_score=lead.lead_score,
+        )
+
+        db.add(db_lead)
+        db.commit()
+        db.refresh(db_lead)
+
 
         # Step 6: Return final validated lead
         return lead
@@ -94,3 +115,14 @@ def enrich_lead(request: CrawlRequest):
             status_code=500,
             detail=f"Failed to enrich lead: {repr(error)}",
         )
+@router.get("/leads")
+def get_leads(
+    db: Session = Depends(get_db),
+):
+    leads = (
+        db.query(LeadModel)
+        .order_by(LeadModel.created_at.desc())
+        .all()
+    )
+
+    return leads

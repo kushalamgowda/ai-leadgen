@@ -1,9 +1,16 @@
+from app.db.database import Base
+from app.db.database import engine
+from app.db import models
+
 import asyncio
 
 from fastapi import FastAPI
 
 from app.api.routes import router
 
+Base.metadata.create_all(
+    bind=engine
+)
 
 app = FastAPI(
     title="AI LeadGen API",
