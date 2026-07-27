@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 from app.db.database import Base
 from app.db.database import engine
 from app.db import models
@@ -16,6 +17,17 @@ app = FastAPI(
     title="AI LeadGen API",
     description="AI-powered lead generation and data enrichment platform",
     version="0.1.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
