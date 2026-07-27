@@ -1,3 +1,8 @@
+import csv
+import io
+
+from fastapi.responses import StreamingResponse
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -153,3 +158,120 @@ def get_leads(
     )
 
     return leads
+@router.get("/leads/export/csv")
+def export_leads_csv(
+    industry: str | None = None,
+    min_score: int | None = None,
+    db: Session = Depends(get_db),
+):
+    query = db.query(LeadModel)
+
+    if industry:
+        query = query.filter(
+            LeadModel.industry.ilike(
+                f"%{industry}%"
+            )
+        )
+
+    if min_score is not None:
+        query = query.filter(
+            LeadModel.lead_score >= min_score
+        )
+
+    leads = (
+        query
+        .order_by(
+            LeadModel.created_at.desc()
+        )
+        .all()
+    )
+
+    output = io.StringIO()
+
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "id",
+        "company_name",
+        "website",
+        "industry",
+        "description",
+        "email",
+        "phone",
+        "location",
+        "lead_score",
+        "created_at",
+    ])
+
+    for lead in leads:
+        writer.writerow([
+            lead.id,
+            lead.company_name,
+            lead.website,
+            lead.industry,
+            lead.description,
+            lead.email,
+            lead.phone,
+            lead.location,
+            lead.lead_score,
+            lead.created_at,
+        ])
+
+    output.seek(0)
+
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": (
+                "attachment; "
+                "filename=leads.csv"
+            )
+        },
+    )
+    
+@router.get("/leads/export/json")
+def export_leads_json(
+    industry: str | None = None,
+    min_score: int | None = None,
+    db: Session = Depends(get_db),
+):
+    query = db.query(LeadModel)
+
+    if industry:
+        query = query.filter(
+            LeadModel.industry.ilike(
+                f"%{industry}%"
+            )
+        )
+
+    if min_score is not None:
+        query = query.filter(
+            LeadModel.lead_score >= min_score
+        )
+
+    leads = (
+        query
+        .order_by(
+            LeadModel.created_at.desc()
+        )
+        .all()
+    )
+
+    data = []
+
+    for lead in leads:
+        data.append({
+            "id": lead.id,
+            "company_name": lead.company_name,
+            "website": lead.website,
+            "industry": lead.industry,
+            "description": lead.description,
+            "email": lead.email,
+            "phone": lead.phone,
+            "location": lead.location,
+            "lead_score": lead.lead_score,
+            "created_at": lead.created_at,
+        })
+
+    return data
