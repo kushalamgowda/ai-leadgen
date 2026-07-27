@@ -117,11 +117,38 @@ def enrich_lead(request: CrawlRequest, db: Session = Depends(get_db)):
         )
 @router.get("/leads")
 def get_leads(
+    page: int = 1,
+    limit: int = 20,
+    industry: str | None = None,
+    min_score: int | None = None,
     db: Session = Depends(get_db),
 ):
+    query = db.query(LeadModel)
+
+    # Filter by industry
+    if industry:
+        query = query.filter(
+            LeadModel.industry.ilike(
+                f"%{industry}%"
+            )
+        )
+
+    # Filter by minimum lead score
+    if min_score is not None:
+        query = query.filter(
+            LeadModel.lead_score >= min_score
+        )
+
+    # Calculate pagination offset
+    offset = (page - 1) * limit
+
     leads = (
-        db.query(LeadModel)
-        .order_by(LeadModel.created_at.desc())
+        query
+        .order_by(
+            LeadModel.created_at.desc()
+        )
+        .offset(offset)
+        .limit(limit)
         .all()
     )
 
