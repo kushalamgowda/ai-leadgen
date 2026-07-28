@@ -1,6 +1,12 @@
+import LeadChart from "./components/LeadChart";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
+
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import StatsCards from "./components/StatsCards";
+import Footer from "./components/Footer";
 
 const API = "http://127.0.0.1:8000/api/v1";
 
@@ -124,30 +130,7 @@ setStats({
   const editLead = (lead) => {
     setEditingLead({ ...lead });
   };
-
-  <section className="stats">
-
-  <div className="stat-card">
-    <h3>Total Leads</h3>
-    <h1>{stats.total}</h1>
-  </div>
-
-  <div className="stat-card">
-    <h3>Average Score</h3>
-    <h1>{stats.average}</h1>
-  </div>
-
-  <div className="stat-card">
-    <h3>High Score Leads</h3>
-    <h1>{stats.highScore}</h1>
-  </div>
-
-  <div className="stat-card">
-    <h3>Industries</h3>
-    <h1>{stats.industries}</h1>
-  </div>
-
-</section>
+  
 
   // ----------------------------
   // Update Lead
@@ -172,272 +155,271 @@ setStats({
   };
 
   return (
-    <div className="app">
+  <div className="app">
 
-      <header className="navbar">
-        <h1>AI LeadGen</h1>
-        <span>AI-Powered Lead Intelligence</span>
-      </header>
+    <Navbar />
 
-      <main className="container">
+    <main className="container">
 
-        <section className="hero">
+      <section className="hero">
 
-          <h2>Turn Websites Into Qualified Leads</h2>
+        <Hero />
 
-          <p>
-            Enter a company website and let AI extract business information
-            automatically.
-          </p>
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="https://company.com"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
 
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="https://company.com"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-            />
+          <button
+            onClick={generateLead}
+            disabled={loading}
+          >
+            {loading ? "Generating..." : "Generate Lead"}
+          </button>
+        </div>
 
-            <button
-              onClick={generateLead}
-              disabled={loading}
-            >
-              {loading ? "Generating..." : "Generate Lead"}
-            </button>
-          </div>
+        {error && <p className="error">{error}</p>}
 
-          {error && <p className="error">{error}</p>}
+      </section>
 
-        </section>
+      {/* ✅ Stats Cards Added */}
+      <StatsCards stats={stats} />
+      <LeadChart leads={leads} />
 
-        {lead && (
-          <section className="lead-card">
-
-            <div className="lead-header">
-
-              <div>
-                <h2>{lead.company_name}</h2>
-
-                <a
-                  href={lead.website}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {lead.website}
-                </a>
-              </div>
-
-              <div className="score">
-                <span>Lead Score</span>
-                <strong>{lead.lead_score ?? "N/A"}</strong>
-              </div>
-
-            </div>
-
-            <div className="lead-grid">
-
-              <div>
-                <label>Industry</label>
-                <p>{lead.industry || "-"}</p>
-              </div>
-
-              <div>
-                <label>Email</label>
-                <p>{lead.email || "-"}</p>
-              </div>
-
-              <div>
-                <label>Phone</label>
-                <p>{lead.phone || "-"}</p>
-              </div>
-
-              <div>
-                <label>Location</label>
-                <p>{lead.location || "-"}</p>
-              </div>
-
-            </div>
-
-            <div className="description">
-              <label>Description</label>
-              <p>{lead.description}</p>
-            </div>
-
-          </section>
-        )}
-
+      {lead && (
         <section className="lead-card">
 
-          <h2>Saved Leads</h2>
+          <div className="lead-header">
 
-          <table className="leads-table">
+            <div>
+              <h2>{lead.company_name}</h2>
 
-            <thead>
+              <a
+                href={lead.website}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {lead.website}
+              </a>
+            </div>
 
-              <tr>
-                <th>Company</th>
-                <th>Industry</th>
-                <th>Email</th>
-                <th>Score</th>
-                <th>Actions</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {leads.map((item) => (
-
-                <tr key={item.id}>
-
-                  <td>{item.company_name}</td>
-
-                  <td>{item.industry || "-"}</td>
-
-                  <td>{item.email || "-"}</td>
-
-                  <td>{item.lead_score}</td>
-
-                  <td>
-
-                    <button
-                      onClick={() => viewLead(item.id)}
-                    >
-                      View
-                    </button>
-
-                    <button
-                      onClick={() => editLead(item)}
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => deleteLead(item.id)}
-                    >
-                      Delete
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </section>
-
-      </main>
-
-      {editingLead && (
-
-        <div className="modal">
-
-          <div className="modal-content">
-
-            <h2>Edit Lead</h2>
-
-            <input
-              value={editingLead.company_name}
-              onChange={(e) =>
-                setEditingLead({
-                  ...editingLead,
-                  company_name: e.target.value,
-                })
-              }
-              placeholder="Company"
-            />
-
-            <input
-              value={editingLead.industry || ""}
-              onChange={(e) =>
-                setEditingLead({
-                  ...editingLead,
-                  industry: e.target.value,
-                })
-              }
-              placeholder="Industry"
-            />
-
-            <input
-              value={editingLead.email || ""}
-              onChange={(e) =>
-                setEditingLead({
-                  ...editingLead,
-                  email: e.target.value,
-                })
-              }
-              placeholder="Email"
-            />
-
-            <input
-              value={editingLead.phone || ""}
-              onChange={(e) =>
-                setEditingLead({
-                  ...editingLead,
-                  phone: e.target.value,
-                })
-              }
-              placeholder="Phone"
-            />
-
-            <input
-              value={editingLead.location || ""}
-              onChange={(e) =>
-                setEditingLead({
-                  ...editingLead,
-                  location: e.target.value,
-                })
-              }
-              placeholder="Location"
-            />
-
-            <input
-              type="number"
-              value={editingLead.lead_score || 0}
-              onChange={(e) =>
-                setEditingLead({
-                  ...editingLead,
-                  lead_score: Number(e.target.value),
-                })
-              }
-              placeholder="Score"
-            />
-
-            <textarea
-              rows="5"
-              value={editingLead.description || ""}
-              onChange={(e) =>
-                setEditingLead({
-                  ...editingLead,
-                  description: e.target.value,
-                })
-              }
-            />
-
-            <br />
-
-            <button onClick={saveLead}>
-              Save
-            </button>
-
-            <button
-              onClick={() => setEditingLead(null)}
-            >
-              Cancel
-            </button>
+            <div className="score">
+              <span>Lead Score</span>
+              <strong>{lead.lead_score ?? "N/A"}</strong>
+            </div>
 
           </div>
+
+          <div className="lead-grid">
+
+            <div>
+              <label>Industry</label>
+              <p>{lead.industry || "-"}</p>
+            </div>
+
+            <div>
+              <label>Email</label>
+              <p>{lead.email || "-"}</p>
+            </div>
+
+            <div>
+              <label>Phone</label>
+              <p>{lead.phone || "-"}</p>
+            </div>
+
+            <div>
+              <label>Location</label>
+              <p>{lead.location || "-"}</p>
+            </div>
+
+          </div>
+
+          <div className="description">
+            <label>Description</label>
+            <p>{lead.description}</p>
+          </div>
+
+        </section>
+      )}
+
+      <section className="lead-card">
+
+        <h2>Saved Leads</h2>
+
+        <table className="leads-table">
+
+          <thead>
+
+            <tr>
+              <th>Company</th>
+              <th>Industry</th>
+              <th>Email</th>
+              <th>Score</th>
+              <th>Actions</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            {leads.map((item) => (
+
+              <tr key={item.id}>
+
+                <td>{item.company_name}</td>
+
+                <td>{item.industry || "-"}</td>
+
+                <td>{item.email || "-"}</td>
+
+                <td>{item.lead_score}</td>
+
+                <td>
+
+                  <button
+                    onClick={() => viewLead(item.id)}
+                  >
+                    View
+                  </button>
+
+                  <button
+                    onClick={() => editLead(item)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => deleteLead(item.id)}
+                  >
+                    Delete
+                  </button>
+
+                </td>
+
+              </tr>
+
+            ))}
+
+          </tbody>
+
+        </table>
+
+      </section>
+
+    </main>
+
+    {editingLead && (
+
+      <div className="modal">
+
+        <div className="modal-content">
+
+          <h2>Edit Lead</h2>
+
+          <input
+            value={editingLead.company_name}
+            onChange={(e) =>
+              setEditingLead({
+                ...editingLead,
+                company_name: e.target.value,
+              })
+            }
+            placeholder="Company"
+          />
+
+          <input
+            value={editingLead.industry || ""}
+            onChange={(e) =>
+              setEditingLead({
+                ...editingLead,
+                industry: e.target.value,
+              })
+            }
+            placeholder="Industry"
+          />
+
+          <input
+            value={editingLead.email || ""}
+            onChange={(e) =>
+              setEditingLead({
+                ...editingLead,
+                email: e.target.value,
+              })
+            }
+            placeholder="Email"
+          />
+
+          <input
+            value={editingLead.phone || ""}
+            onChange={(e) =>
+              setEditingLead({
+                ...editingLead,
+                phone: e.target.value,
+              })
+            }
+            placeholder="Phone"
+          />
+
+          <input
+            value={editingLead.location || ""}
+            onChange={(e) =>
+              setEditingLead({
+                ...editingLead,
+                location: e.target.value,
+              })
+            }
+            placeholder="Location"
+          />
+
+          <input
+            type="number"
+            value={editingLead.lead_score || 0}
+            onChange={(e) =>
+              setEditingLead({
+                ...editingLead,
+                lead_score: Number(e.target.value),
+              })
+            }
+            placeholder="Score"
+          />
+
+          <textarea
+            rows="5"
+            value={editingLead.description || ""}
+            onChange={(e) =>
+              setEditingLead({
+                ...editingLead,
+                description: e.target.value,
+              })
+            }
+          />
+
+          <br />
+
+          <button onClick={saveLead}>
+            Save
+          </button>
+
+          <button
+            onClick={() => setEditingLead(null)}
+          >
+            Cancel
+          </button>
 
         </div>
 
-      )}
+      </div>
 
-    </div>
-  );
+    )}
+
+    {/* ✅ Footer Added */}
+    <Footer />
+
+  </div>
+);
 }
 
 export default App;
