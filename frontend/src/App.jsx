@@ -1,6 +1,7 @@
 import LeadChart from "./components/LeadChart";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 import "./App.css";
 
 import Navbar from "./components/Navbar";
@@ -94,8 +95,12 @@ setStats({
       });
 
       setLead(response.data);
+
+      toast.success("AI Lead generated successfully 🤖");
+
       fetchLeads();
     } catch (err) {
+      toast.error("Failed to generate lead ❌");
       setError("Failed to generate lead.");
     } finally {
       setLoading(false);
@@ -110,6 +115,9 @@ setStats({
 
     try {
       await axios.delete(`${API}/leads/${id}`);
+
+      toast.success("Lead deleted successfully");
+
       fetchLeads();
     } catch (err) {
       alert("Failed to delete lead");
@@ -152,6 +160,7 @@ setStats({
       });
 
       setEditingLead(null);
+      toast.success("Lead updated successfully ✨");
       fetchLeads();
     } catch (err) {
       alert("Failed to update lead");
