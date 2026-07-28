@@ -25,6 +25,10 @@ function App() {
 
   const [editingLead, setEditingLead] = useState(null);
 
+  const [search, setSearch] = useState("");
+  const [industryFilter, setIndustryFilter] = useState("");
+  const [scoreFilter, setScoreFilter] = useState(0);
+  const [sortBy, setSortBy] = useState("newest");
   // ----------------------------
   // Fetch all saved leads
   // ----------------------------
@@ -154,6 +158,30 @@ setStats({
     }
   };
 
+  const filteredLeads = [...leads]
+    .filter((lead) =>
+      lead.company_name
+        ?.toLowerCase()
+        .includes(search.toLowerCase())
+    )
+    .filter((lead) =>
+      industryFilter === ""
+        ? true
+        : lead.industry === industryFilter
+    )
+    .filter((lead) =>
+      (lead.lead_score || 0) >= scoreFilter
+    )
+    .sort((a, b) => {
+      if (sortBy === "score")
+        return (b.lead_score || 0) - (a.lead_score || 0);
+
+      if (sortBy === "company")
+        return a.company_name.localeCompare(b.company_name);
+
+      return b.id - a.id;
+    });
+
   return (
   <div className="app">
 
@@ -248,7 +276,55 @@ setStats({
       <section className="lead-card">
 
         <h2>Saved Leads</h2>
+        <div className="toolbar">
 
+          <input
+            type="text"
+            placeholder="🔍 Search Company..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+        <select
+            value={industryFilter}
+            onChange={(e) => setIndustryFilter(e.target.value)}
+        >
+          <option value="">All Industries</option>
+
+          {[...new Set(
+            leads
+              .map((l) => l.industry)
+            .filter(Boolean)
+          )].map((industry) => (
+            <option key={industry} value={industry}>
+              {industry}
+            </option>
+        ))}
+
+      </select>
+
+      <select
+        value={scoreFilter}
+        onChange={(e) => setScoreFilter(Number(e.target.value))}
+      >
+        <option value="0">All Scores</option>
+        <option value="25">25+</option>
+        <option value="50">50+</option>
+        <option value="75">75+</option>
+      </select>
+
+      <select
+        value={sortBy}
+        onChange={(e) => setSortBy(e.target.value)}
+      >
+        <option value="newest">Newest</option>
+        <option value="score">Highest Score</option>
+        <option value="company">Company</option>
+      </select>
+
+      </div>
+        
+        
         <table className="leads-table">
 
           <thead>
@@ -265,7 +341,7 @@ setStats({
 
           <tbody>
 
-            {leads.map((item) => (
+            {filteredLeads.map((item) => (
 
               <tr key={item.id}>
 
