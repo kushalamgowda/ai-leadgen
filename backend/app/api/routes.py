@@ -12,7 +12,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, HttpUrl
 from app.services.lead_scorer import calculate_lead_score
 from app.config import settings
-from app.schemas.lead import Lead
+from app.schemas.lead import Lead, LeadUpdate
 from app.services.ai_extractor import AIExtractor
 from app.services.contact_extractor import (
     extract_emails,
@@ -158,6 +158,51 @@ def get_leads(
     )
 
     return leads
+
+@router.delete("/leads/{lead_id}")
+def delete_lead(lead_id: int, db: Session = Depends(get_db)):
+    lead = db.query(LeadModel).filter(LeadModel.id == lead_id).first()
+
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+
+    db.delete(lead)
+    db.commit()
+
+    return {
+        "message": "Lead deleted successfully"
+    }
+
+@router.put("/leads/{lead_id}")
+def update_lead(
+    lead_id: int,
+    updated_lead: LeadUpdate,
+    db: Session = Depends(get_db),
+):
+    lead = db.query(LeadModel).filter(LeadModel.id == lead_id).first()
+
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+
+    update_data = updated_lead.model_dump(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(lead, key, value)
+
+    db.commit()
+    db.refresh(lead)
+
+    return lead
+
+@router.get("/leads/{lead_id}")
+def get_lead(lead_id: int, db: Session = Depends(get_db)):
+    lead = db.query(LeadModel).filter(LeadModel.id == lead_id).first()
+
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+
+    return lead
+
 @router.get("/leads/export/csv")
 def export_leads_csv(
     industry: str | None = None,
