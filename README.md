@@ -1,3 +1,27 @@
+AI LeadGen Platform
+
+Features
+- AI Lead Enrichment
+- Lead Scoring
+- Lead Management
+- Analytics Dashboard
+- CSV/JSON Export
+- AI Sales Email Generator
+
+Tech Stack
+- React
+- FastAPI
+- Gemini AI
+- SQLAlchemy
+- SQLite
+
+Setup Instructions
+- Backend
+- Frontend
+- Environment Variables
+
+
+
 # AI LeadGen
 
 An AI-powered lead generation and data enrichment platform.
