@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.db.models import LeadModel
 from fastapi import APIRouter, HTTPException
+from app.services.email_generator import generate_sales_email
 from pydantic import BaseModel, HttpUrl
 from app.services.lead_scorer import calculate_lead_score
 from app.config import settings
@@ -202,6 +203,29 @@ def get_lead(lead_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Lead not found")
 
     return lead
+
+@router.get("/leads/{lead_id}/email")
+def generate_lead_email(
+    lead_id: int,
+    db: Session = Depends(get_db),
+):
+    lead = (
+        db.query(LeadModel)
+        .filter(LeadModel.id == lead_id)
+        .first()
+    )
+
+    if not lead:
+        raise HTTPException(
+            status_code=404,
+            detail="Lead not found"
+        )
+
+    email = generate_sales_email(lead)
+
+    return {
+        "email": email
+    }
 
 @router.get("/leads/export/csv")
 def export_leads_csv(

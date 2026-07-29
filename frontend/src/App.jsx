@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 const API = "http://127.0.0.1:8000/api/v1";
 
 function App() {
+  const [generatedEmail, setGeneratedEmail] = useState("");
   const [url, setUrl] = useState("");
   const [lead, setLead] = useState(null);
   const [leads, setLeads] = useState([]);
@@ -155,6 +156,17 @@ setStats({
     }
   };
 
+  const generateEmail = async (id) => {
+  try {
+    const response = await axios.get(
+      `${API}/leads/${id}/email`
+    );
+
+    setGeneratedEmail(response.data.email);
+  } catch (err) {
+    alert("Failed to generate email");
+  }
+};
   // ----------------------------
   // Edit Button
   // ----------------------------
@@ -339,7 +351,34 @@ setStats({
         ))}
 
       </select>
+      {generatedEmail && (
+  <section className="lead-card">
 
+    <h2>✨ AI Outreach Email</h2>
+
+    <textarea
+      rows="12"
+      value={generatedEmail}
+      readOnly
+      style={{
+        width: "100%",
+        padding: "15px",
+        borderRadius: "12px",
+      }}
+    />
+    <button
+      onClick={() =>
+        navigator.clipboard.writeText(
+          generatedEmail
+        )
+      }
+    >
+      📋 Copy Email
+    </button>
+
+
+  </section>
+)}
       <select
         value={scoreFilter}
         onChange={(e) => setScoreFilter(Number(e.target.value))}
@@ -394,25 +433,23 @@ setStats({
 
   <div className="action-buttons">
 
-    <button
-      onClick={() => viewLead(item.id)}
-    >
-      View
-    </button>
+  <button onClick={() => viewLead(item.id)}>
+    👁 View
+  </button>
 
-    <button
-      onClick={() => editLead(item)}
-    >
-      Edit
-    </button>
+  <button onClick={() => editLead(item)}>
+    ✏ Edit
+  </button>
 
-    <button
-      onClick={() => deleteLead(item.id)}
-    >
-      Delete
-    </button>
+  <button onClick={() => generateEmail(item.id)}>
+    ✨ Email
+  </button>
 
-  </div>
+  <button onClick={() => deleteLead(item.id)}>
+    🗑 Delete
+  </button>
+
+</div>
 
 </td>
 
