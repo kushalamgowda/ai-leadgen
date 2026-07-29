@@ -392,25 +392,29 @@ setStats({
 
                 <td>
 
-                  <button
-                    onClick={() => viewLead(item.id)}
-                  >
-                    View
-                  </button>
+  <div className="action-buttons">
 
-                  <button
-                    onClick={() => editLead(item)}
-                  >
-                    Edit
-                  </button>
+    <button
+      onClick={() => viewLead(item.id)}
+    >
+      View
+    </button>
 
-                  <button
-                    onClick={() => deleteLead(item.id)}
-                  >
-                    Delete
-                  </button>
+    <button
+      onClick={() => editLead(item)}
+    >
+      Edit
+    </button>
 
-                </td>
+    <button
+      onClick={() => deleteLead(item.id)}
+    >
+      Delete
+    </button>
+
+  </div>
+
+</td>
 
               </tr>
 
