@@ -40,7 +40,7 @@ function App() {
   // ----------------------------
   const fetchLeads = async () => {
     try {
-      const response = await axios.get(`${API}/leads`);
+      const response = await axios.get(`${API_BASE}/leads`);
       const data = response.data;
 
 setLeads(data);
@@ -110,7 +110,7 @@ setStats({
 
       setAiStep("Calculating lead score...");
 
-      const response = await axios.post(`${API}/enrich`, {
+      const response = await axios.post(`${API_BASE}/enrich`, {
         url,
 
       });
@@ -136,7 +136,7 @@ setStats({
     if (!window.confirm("Delete this lead?")) return;
 
     try {
-      await axios.delete(`${API}/leads/${id}`);
+      await axios.delete(`${API_BASE}/leads/${id}`);
 
       toast.success("Lead deleted successfully");
 
@@ -151,7 +151,7 @@ setStats({
   // ----------------------------
   const viewLead = async (id) => {
     try {
-      const response = await axios.get(`${API}/leads/${id}`);
+      const response = await axios.get(`${API_BASE}/leads/${id}`);
       setLead(response.data);
     } catch (err) {
       alert("Unable to fetch lead");
@@ -161,7 +161,7 @@ setStats({
   const generateEmail = async (id) => {
   try {
     const response = await axios.get(
-      `${API}/leads/${id}/email`
+      `${API_BASE}/leads/${id}/email`
     );
 
     setGeneratedEmail(response.data.email);
@@ -182,7 +182,7 @@ setStats({
   // ----------------------------
   const saveLead = async () => {
     try {
-      await axios.put(`${API}/leads/${editingLead.id}`, {
+      await axios.put(`${API_BASE}/leads/${editingLead.id}`, {
         company_name: editingLead.company_name,
         industry: editingLead.industry,
         description: editingLead.description,
