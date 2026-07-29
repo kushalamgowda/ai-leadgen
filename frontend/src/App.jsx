@@ -22,6 +22,7 @@ function App() {
   industries: 0,
 });
   const [loading, setLoading] = useState(false);
+  const [aiStep, setAiStep] = useState("");
   const [error, setError] = useState("");
 
   const [editingLead, setEditingLead] = useState(null);
@@ -89,9 +90,25 @@ setStats({
     try {
       setLoading(true);
       setError("");
+      setAiStep("Connecting to website...");
+
+      setAiStep("Extracting company information...");
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1000)
+    );
+
+      setAiStep("Finding contacts...");
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1000)
+);
+
+      setAiStep("Calculating lead score...");
 
       const response = await axios.post(`${API}/enrich`, {
         url,
+
       });
 
       setLead(response.data);
@@ -104,6 +121,7 @@ setStats({
       setError("Failed to generate lead.");
     } finally {
       setLoading(false);
+      setAiStep("");
     }
   };
 
@@ -214,6 +232,15 @@ setStats({
             onClick={generateLead}
             disabled={loading}
           >
+            {loading && (
+              <div className="ai-loader">
+
+                <h3>🤖 AI Processing</h3>
+
+                <p>{aiStep}</p>
+
+              </div>
+        )}
             {loading ? "Generating..." : "Generate Lead"}
           </button>
         </div>
