@@ -12,7 +12,6 @@ import Footer from "./components/Footer";
 const API_BASE =
   import.meta.env.VITE_API_URL ||
   "http://127.0.0.1:8000/api/v1";
-
 function App() {
   const [generatedEmail, setGeneratedEmail] = useState("");
   const [url, setUrl] = useState("");
