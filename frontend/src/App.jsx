@@ -9,7 +9,9 @@ import Hero from "./components/Hero";
 import StatsCards from "./components/StatsCards";
 import Footer from "./components/Footer";
 
-const API = "http://127.0.0.1:8000/api/v1";
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  "http://127.0.0.1:8000/api/v1";
 
 function App() {
   const [generatedEmail, setGeneratedEmail] = useState("");
