@@ -22,6 +22,7 @@ function App() {
   industries: 0,
 });
   const [loading, setLoading] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const [aiStep, setAiStep] = useState("");
   const [error, setError] = useState("");
 
@@ -210,9 +211,9 @@ setStats({
     });
 
   return (
-  <div className="app">
+  <div className={darkMode ? "app dark" : "app"}>
 
-    <Navbar />
+    <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
 
     <main className="container">
 

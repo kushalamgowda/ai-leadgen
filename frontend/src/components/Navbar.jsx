@@ -2,8 +2,8 @@ import { FaRobot } from "react-icons/fa";
 import { FiBarChart2 } from "react-icons/fi";
 import { MdOutlineDashboard } from "react-icons/md";
 import { BsDownload } from "react-icons/bs";
-
-function Navbar() {
+import { FaMoon, FaSun } from "react-icons/fa";
+function Navbar({darkMode, setDarkMode}) {
   return (
     <nav className="navbar">
 
@@ -27,7 +27,13 @@ function Navbar() {
           <BsDownload />
           Export
         </a>
-      </div>
+        </div>
+        <button
+            className="theme-btn"
+            onClick={() => setDarkMode(!darkMode)}
+        >
+        {   darkMode ? <FaSun /> : <FaMoon />}
+        </button>
 
     </nav>
   );

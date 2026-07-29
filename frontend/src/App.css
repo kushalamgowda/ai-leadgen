@@ -330,4 +330,53 @@ flex-direction:column;
 gap:10px;
 }
 
+.app {
+  min-height:100vh;
+  transition:0.3s;
+}
+
+
+.app.dark {
+
+  background:#111827;
+
+  color:white;
+
+}
+
+
+.dark .lead-card,
+.dark .stat-card {
+
+  background:#1f2937;
+
+  color:white;
+
+}
+
+
+.dark input,
+.dark select {
+
+  background:#374151;
+
+  color:white;
+
+}
+
+
+.theme-btn {
+
+  border:none;
+
+  padding:10px;
+
+  border-radius:50%;
+
+  cursor:pointer;
+
+  font-size:18px;
+
+}
+
 }
