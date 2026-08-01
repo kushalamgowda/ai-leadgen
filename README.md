@@ -53,7 +53,8 @@ SQLite Database
 
 ### Dashboard
 
-![Dashboard](C:\Users\kusha_gv3fuwy\OneDrive\Pictures\Screenshots\Screenshot 2026-07-31 214940.png)
+![Dashboard](<img width="1303" height="862" alt="Screenshot 2026-07-31 214940" src="https://github.com/user-attachments/assets/464910ed-0ddc-4955-af11-5b110677465b" />
+)
 
 ### Generate Lead
 
