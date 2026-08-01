@@ -57,11 +57,6 @@ SQLite Database
 
 
 
-### Generate Lead
-
-<img width="1221" height="876" alt="Screenshot 2026-07-31 214957" src="https://github.com/user-attachments/assets/4d238dc8-a8ab-4529-aaee-03b52f3a84ff" />
-
-
 ### Analytics
 
 
