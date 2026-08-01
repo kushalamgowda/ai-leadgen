@@ -53,7 +53,7 @@ SQLite Database
 
 ### Dashboard
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](C:\Users\kusha_gv3fuwy\OneDrive\Pictures\Screenshots\Screenshot 2026-07-31 214940.png)
 
 ### Generate Lead
 
