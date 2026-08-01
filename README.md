@@ -53,20 +53,30 @@ SQLite Database
 
 ### Dashboard
 
-<img width="1303" height="862" alt="Screenshot 2026-07-31 214940" src="https://github.com/user-attachments/assets/464910ed-0ddc-4955-af11-5b110677465b" />
+<img width="1221" height="876" alt="Screenshot 2026-07-31 214957" src="https://github.com/user-attachments/assets/9b4ca985-0dfb-4370-92b3-db8ef57abbaa" />
+
 
 
 ### Generate Lead
 
-![Generate Lead](screenshots/generate-lead.png)
+<img width="1221" height="876" alt="Screenshot 2026-07-31 214957" src="https://github.com/user-attachments/assets/4d238dc8-a8ab-4529-aaee-03b52f3a84ff" />
 
-### Lead Results
-
-![Lead Results](screenshots/lead-results.png)
 
 ### Analytics
 
-![Analytics](screenshots/analytics.png)
+
+<img width="1913" height="1023" alt="leadgen-analytics png" src="https://github.com/user-attachments/assets/9cbbd714-cc47-428e-b490-28006eca6020" />
+
+
+
+### Lead Results
+
+<img width="1917" height="1020" alt="leadgen-ai-email png" src="https://github.com/user-attachments/assets/74e0bdb0-b14c-46e6-ac52-c7db55e4600c" />
+
+
+### Lead email
+
+<img width="1918" height="1031" alt="leadgen-edit png" src="https://github.com/user-attachments/assets/b530ee4a-c243-4f17-b918-b9a784664ca7" />
 
 ---
 
