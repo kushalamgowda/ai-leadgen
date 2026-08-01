@@ -53,7 +53,7 @@ SQLite Database
 
 ### Dashboard
 
-<img width="1221" height="876" alt="Screenshot 2026-07-31 214957" src="https://github.com/user-attachments/assets/9b4ca985-0dfb-4370-92b3-db8ef57abbaa" />
+<img width="1906" height="1028" alt="leadgen-dashboard png" src="https://github.com/user-attachments/assets/a95cb191-c7bb-4e2e-9814-cdf5a9a23ae4" />
 
 
 
@@ -114,11 +114,19 @@ npm run dev
 Frontend:
 Vercel
 
+https://ai-leadgen-seven.vercel.app/
+
 Backend:
 Render
 
+https://ai-leadgen-gpb5.onrender.com
 ---
 
+Health Check:
+
+https://ai-leadgen-gpb5.onrender.com/health
+
+---
 ## Author
 
 Kushala Manjunath Gowda
